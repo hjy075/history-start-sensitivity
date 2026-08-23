@@ -1,0 +1,4 @@
+dataset_scenario,lost_origins,treated_loss_pct,global_loss_pct
+Visuelle strict,359,15.22,0.0385
+FreshRetail strict,1146,1.46,0.0263
+FreshRetail blanket sensitivity,7938,2.8,0.1825
