@@ -1,5 +1,5 @@
 # ===== step_11.py =====
-# Simple, transparent automatic summary. Final paper verdict should still inspect outputs.
+# Compact diagnostics for the public reproducibility workflow.
 stable_models = e1_boot_effects[(e1_boot_effects["ci_low"] > 0) | (e1_boot_effects["ci_high"] < 0)]
 strict_coverage = E2[(E2["scenario"] == "strict_grounded") & (E2["min_history"] == PRIMARY_MIN_HISTORY)]
 coverage_nonzero = bool(len(strict_coverage) and strict_coverage.iloc[0]["treated_lost_origins"] > 0)
@@ -8,20 +8,9 @@ hh = e1_heterogeneity.pivot(index="model", columns="subgroup", values="delta_MAE
 robust_not_tail = False
 if "all_strict" in hh.columns and "delay<=7" in hh.columns:
     z = hh.loc[hh.index.intersection(stable_models["model"])]
-    robust_not_tail = bool(((np.sign(z["all_strict"]) == np.sign(z["delay<=7"])) & z["delay<=7"].notna()).any()) if len(z) else False
-
-if len(stable_models) == 0:
-    verdict = "KILL_OR_REDUCE"
-    reason = "FreshRetail strict sample shows no stable canonical history-start effect."
-elif not coverage_nonzero:
-    verdict = "REVIEW"
-    reason = "Local model effects exist but eligibility loss was not measured."
-elif not robust_not_tail:
-    verdict = "REVIEW"
-    reason = "Effects exist but may depend on long-delay/tail cases; inspect heterogeneity."
-else:
-    verdict = "SURVIVE"
-    reason = "FreshRetail strict stock-confirmed mechanism replication survives canonical and tail-robustness checks."
+    robust_not_tail = bool(
+        ((np.sign(z["all_strict"]) == np.sign(z["delay<=7"])) & z["delay<=7"].notna()).any()
+    ) if len(z) else False
 
 summary = {
     **summary_gate,
@@ -33,8 +22,6 @@ summary = {
     "local_bootstrap_mean_kendall_tau": float(e1_tau_summary.iloc[0]["mean_tau"]),
     "coverage_nonzero": coverage_nonzero,
     "tail_robustness_pass": robust_not_tail,
-    "verdict": verdict,
-    "verdict_reason": reason,
     "persistent_data_cache": str(CORE_PARQUET),
 }
 
@@ -57,10 +44,9 @@ if RUN_GLOBAL_E3 and len(E3_summary):
 with open(OUTPUT_DIR/"main_experiment_summary.json", "w") as f:
     json.dump(summary, f, indent=2)
 
-print("#"*72)
-print("FRESHRETAIL MAIN EXPERIMENT DECISION:", verdict)
-print(reason)
-print("#"*72)
+print("Models with bootstrap intervals excluding zero:", stable_models["model"].tolist())
+print("Eligibility loss observed:", coverage_nonzero)
+print("Tail robustness diagnostic:", robust_not_tail)
 print(json.dumps(summary, indent=2))
 print("Saved:", OUTPUT_DIR)
 print("Persistent data cache:", CORE_PARQUET)
