@@ -1,0 +1,23 @@
+\section{Limitations}
+
+This study has several limitations. First, only two public retail datasets are examined. Visuelle provides a lifecycle-oriented history but has very low affected prevalence; FreshRetailNet-50K has stronger stock-status evidence but its observation-window start is not a documented product launch date. Second, the experiment focuses on one-step statistical forecasting methods rather than modern global neural forecasters. This is intentional for identification and computational reproducibility, but future work could test whether learned global models are more or less sensitive to history-start conventions. Third, FreshRetailNet-50K results are evaluated on a prespecified grid of target days rather than every possible origin, and the origin-specific profiles are descriptive because separate confidence intervals are not estimated for each target day. Fourth, the bootstrap clusters by product to preserve dependence among stores carrying the same product, but it does not explicitly model residual dependence among different products within the same store. Fifth, stock confirmation uses the released \texttt{stock\_hour6\_22\_cnt} indicator and therefore does not establish continuous 24-hour availability. Sixth, our outcomes are forecasting metrics and ranks rather than downstream inventory cost or service levels.
+
+These limitations bound the claim: the paper demonstrates an evaluation mechanism and its heterogeneity, not a universal law of retail forecasting.
+
+\section{Conclusion}
+
+Retail forecasting evaluation can depend on a seemingly mundane preprocessing decision: whether history begins at a grounded lifecycle/observation start or at the first positive sale. Across Visuelle 2.0 and FreshRetailNet-50K, we find that this decision can alter local forecast errors, model ordering, and the set of eligible early forecast origins. The effects are not uniformly harmful and are strongly context-dependent. Visuelle exhibits broad model-level degradation and substantial rank reordering, while FreshRetailNet-50K shows smaller mixed-sign effects and non-monotonic temporal heterogeneity.
+
+At the same time, both datasets show strong benchmark-level robustness, consistent with affected histories being uncommon. This contrast is the central empirical result: \emph{local rank sensitivity does not necessarily imply global benchmark invalidity}. Finally, scaled metrics whose denominators depend on the available history can introduce a second measurement channel and even reverse the apparent sign of a preprocessing effect.
+
+History-start conventions should therefore be treated as explicit components of forecast evaluation design. Reporting their semantics, prevalence, eligibility consequences, and metric interactions can make retail forecasting benchmarks more transparent and easier to interpret.
+
+\section*{Data and Code Availability}
+
+Visuelle 2.0 is obtained from the official project page, which describes the dataset as publicly available and provides access through a short form \citep{visuelle_dataset_page}. We do not redistribute the raw Visuelle 2.0 files. FreshRetailNet-50K is obtained from the official Dingdong-Inc Hugging Face release \citep{freshretail_dataset_card}; the dataset card lists version 1.0 and a Creative Commons Attribution 4.0 International (CC BY 4.0) license. We use only the training split and do not redistribute raw FreshRetailNet-50K files in the code package. Users should obtain both datasets from their original providers and follow the corresponding terms and citation requests.
+
+The reproducibility package is publicly available in the \href{https://github.com/hjy075/history-start-sensitivity}{GitHub repository}. It contains the analysis notebooks, paper source, derived summary tables, and paper figures, but no third-party raw data. The Visuelle notebook intentionally requires a user-supplied dataset path obtained through the official access route; the FreshRetail notebook downloads the official Hugging Face dataset by repository identifier.
+
+\section*{Reproducibility}
+
+All experiments use public datasets and canonical implementations from StatsForecast 2.1.1. The analysis was executed in Google Colab with persistent data caches and checkpointed intermediate outputs. The final uncertainty analysis uses 5,000 product-cluster bootstrap replicates while targeting the same series-weighted estimand as the point estimates.
