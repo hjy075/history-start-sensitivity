@@ -108,26 +108,10 @@ stable_effects = effects[(effects["ci_low"] > 0) | (effects["ci_high"] < 0)]
 rank_reordering_stable = bool(sensitivity_ranks["rank_order_changed"].sum() >= 2)
 winner_switch_stable = bool(sensitivity_ranks["winner_changed"].sum() >= 2)
 
-if failure_rate > 0.01:
-    verdict = "REVIEW"
-    reason = f"Canonical model failure rate too high: {failure_rate:.2%}"
-elif len(stable_effects) == 0:
-    verdict = "KILL_OR_REDUCE"
-    reason = "Canonical implementations show no stable product-bootstrap history-start effect."
-elif not rank_reordering_stable:
-    verdict = "REVIEW"
-    reason = "Model-level effects exist, but rank reordering is not robust to min-history sensitivity."
-elif winner_switch_stable:
-    verdict = "SURVIVE"
-    reason = "Canonical effects, rank reordering, and winner switching all survive robustness checks."
-else:
-    verdict = "SURVIVE_MUTATE"
-    reason = "Canonical model effects and rank reordering survive, while the top-ranked winner remains stable."
-
-print("#"*72)
-print("MAIN EXPERIMENT DECISION:", verdict)
-print(reason)
-print("#"*72)
+print("Model failure rate:", f"{failure_rate:.2%}")
+print("Models with bootstrap intervals excluding zero:", stable_effects["model"].tolist())
+print("Rank reordering across sensitivity settings:", rank_reordering_stable)
+print("Winner switching across sensitivity settings:", winner_switch_stable)
 
 # ===== step_13.py =====
 audit.to_csv(OUTPUT_DIR/"series_audit.csv", index=False)
@@ -164,8 +148,6 @@ summary = {
     "global_winner_change_bootstrap_probability": float(global_winner_change_prob),
     "rank_reordering_stable": bool(rank_reordering_stable),
     "winner_switch_stable": bool(winner_switch_stable),
-    "verdict": verdict,
-    "verdict_reason": reason,
     "persistent_data_cache": str(SALES_CACHE_PARQUET),
 }
 with open(OUTPUT_DIR/"main_experiment_summary.json", "w") as f:
