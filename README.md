@@ -11,7 +11,7 @@ Reproducibility repository for **“When Does History Start Matter? Model-Specif
 - `DATA_SOURCES.md` — dataset provenance, access routes, license notes, and the FreshRetail metadata discrepancy noted during verification.
 - `requirements.txt` — lightweight Python environment specification.
 
-Keeping the substantive code in `src/` makes Git diffs readable while retaining notebooks as convenient Colab/Jupyter entry points.
+Keeping the substantive code in `src/` makes Git diffs readable while retaining notebooks as convenient Colab/Jupyter entry points. The repository keeps the manuscript source modular for maintainability; the arXiv upload package uses a flattened top-level `main.tex` with static figure files for submission portability.
 
 ## Data
 
