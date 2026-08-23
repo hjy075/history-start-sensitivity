@@ -1,0 +1,76 @@
+\section{Introduction}
+
+Forecast evaluation is usually discussed in terms of models, horizons, metrics, and test-set construction. A more basic design choice often receives less attention: \emph{where does the historical series begin?} This question matters in retail because product--store histories can begin with zeros for several different reasons. A zero may represent a product that was not yet available, a product that was available but sold nothing, or a data-collection convention. Treating all leading zeros as equivalent can therefore change the information supplied to a forecasting method.
+
+First-positive initialization is not merely hypothetical. Oracle Supply Chain Planning documentation states that its demand forecasting process removes leading zero demand before the first positive demand point \citep{oracle2026leadingzeros}. Related academic work also preprocesses intermittent-demand series by removing initial zeros and taking the first non-zero demand as the initial observation when the meaning of initial zeros is ambiguous \citep{li2023feature}. Such choices can be operationally reasonable, but they are also \emph{outcome-conditioned}: the history start is determined by the location of the first positive realization.
+
+This paper asks a narrow empirical question: \emph{when first-positive initialization differs from a lifecycle-aligned or stock-grounded history start, how much does the history-start convention alter forecast performance and method rankings, and do those local changes propagate to benchmark-level conclusions?} The focus is evaluation validity rather than proposing a new forecasting model.
+
+We distinguish three effects. First, the \textbf{local common-support effect} compares two forecasts for the same series, same target time, and same realized target, changing only the history start. Second, the \textbf{eligibility effect} measures how many early forecast origins disappear when a minimum history requirement is applied after trimming. Third, the \textbf{global propagation effect} asks whether local changes are prevalent enough to change benchmark-level scores, rankings, or winners.
+
+Two public datasets provide complementary identification. Visuelle 2.0 contains short lifecycle histories for fast-fashion products \citep{skenderi2022visuelle}; its market-delivery setting gives a natural lifecycle-aligned baseline, but affected series are rare. FreshRetailNet-50K contains 50,000 store--product series with explicit stockout annotations \citep{wang2025freshretail}; it does not document product-launch timing at the observation-window start, but it allows us to identify leading zero-sales days on which the item was not recorded as stocked out. We therefore use FreshRetailNet-50K as a \emph{mechanism replication}, not as a product-launch replication.
+
+Our main findings are:
+\begin{enumerate}[leftmargin=1.5em]
+    \item History-start sensitivity is \textbf{model-specific}. In Visuelle, seven of nine canonical methods have product-cluster bootstrap confidence intervals for $\Delta$MAE that exclude zero. In FreshRetailNet-50K, only HistoricAverage and optimized SES remain individually distinguishable from zero after the estimand-corrected bootstrap, with opposite signs.
+    \item Local \textbf{ranking sensitivity} survives even when the deterministic winner is stable. Corrected product-cluster bootstraps give mean Kendall's $\tau$ of 0.483 in Visuelle and 0.813 in FreshRetailNet-50K, with winner changes in 10.6\% and 33.4\% of replicates, respectively.
+    \item FreshRetailNet-50K reveals strong \textbf{temporal heterogeneity}. The sign of the trimming effect changes repeatedly across evaluation origins rather than decaying monotonically with more history.
+    \item First-positive initialization creates a distinct \textbf{coverage effect}: 15.2\% of eligible treated origins are lost in Visuelle and 1.46\% in the strict FreshRetailNet-50K sample under the primary minimum-history rule.
+    \item Local instability does \textbf{not} imply global benchmark failure. Because exposure is rare, benchmark-level score changes are very small and global rankings are nearly unchanged.
+    \item Scaled metrics introduce a separate measurement channel. When MASE/RMSSE denominators are recomputed from each convention-specific history, the apparent direction of an effect can differ from the fixed-denominator result.
+\end{enumerate}
+
+These results connect intermittent-demand forecasting, retail benchmark design, and forecast measurement. The contribution is not that first-positive trimming is always harmful; the evidence rejects that stronger claim. Instead, history-start conventions are a measurable source of evaluation sensitivity whose local importance depends on model family, data context, and evaluation origin, while aggregate benchmark conclusions may remain robust.
+
+\section{Related Work}
+
+\subsection{Intermittent demand forecasting}
+
+Intermittent demand contains many zero observations and irregular positive arrivals, motivating methods that treat demand sizes and inter-demand intervals separately. Croston's method is the classical starting point \citep{croston1972}. Subsequent work identified bias in Croston-style estimates and proposed corrections, including the Syntetos--Boylan approximation \citep{syntetos2005accuracy}. The TSB method updates demand probability every period, which allows forecasts to react to extended zero runs and obsolescence \citep{teunter2011tsb}. Temporal aggregation has also been used to reduce intermittence, including ADIDA \citep{nikolopoulos2011adida} and multi-level forecast combinations \citep{petropoulos2015combinations}.
+
+Our study does not compare these methods to establish a new accuracy ranking. Instead, we use a heterogeneous panel of canonical implementations to test whether the \emph{same method} changes when its input history begins at a different point. This distinction matters because the history-start convention can interact with each method's initialization and state updates.
+
+\subsection{Leading zeros and outcome-conditioned history starts}
+
+Leading-zero removal appears in both forecasting systems and empirical research. Current Oracle demand-plan documentation describes removal of leading zero demand before the first positive point \citep{oracle2026leadingzeros}. In an intermittent-demand forecasting study using RAF and M5 data, \citet{li2023feature} explicitly remove initial zeros because the data do not reveal whether those zeros mean zero demand or that a product was not yet in stores.
+
+This ambiguity motivates our identification strategy. Rather than assuming that all leading zeros are either ``inactive'' or ``true zero demand,'' we exploit lifecycle information in Visuelle and stock-status information in FreshRetailNet-50K. The resulting comparison is deliberately conditional: it evaluates series for which first-positive trimming removes observations that the alternative convention would retain.
+
+\subsection{Benchmark validity and forecast metrics}
+
+Retail forecasting competitions have emphasized the importance of evaluation design and representativeness. The M5 competition formalized large-scale retail forecast evaluation across hierarchical sales series \citep{makridakis2022m5}; subsequent work examined how representative those series are of other retail datasets \citep{theodorou2022representativeness}. Our question is complementary: even within a fixed benchmark, can a preprocessing convention change which observations are admitted into history and thereby alter model comparisons?
+
+Forecast metrics add another layer. \citet{hyndman2006mase} proposed MASE to enable scale-free comparisons using an in-sample naive-error denominator. That denominator is itself history-dependent. When the research intervention changes the history start, recomputing the denominator under each convention mixes two effects: a change in forecasts and a change in scale normalization. We therefore report both fixed-denominator and convention-specific scaled metrics.
+
+\section{Data}
+
+\subsection{Visuelle 2.0}
+
+Visuelle 2.0 is a fast-fashion benchmark containing 5,355 products across six seasons and item--shop sales histories \citep{skenderi2022visuelle}. We obtained the dataset through the official Visuelle 2.0 project page, which provides access via a short form \citep{visuelle_dataset_page}. The released \texttt{sales.csv} table used here contains 106,850 product--store series from 110 stores, each observed over a 12-week window. We exclude series with negative weekly sales from the primary global analysis, leaving 103,492 series. We use only the sales table; images, customer-level purchase data, and other modalities are not used in this study.
+
+We define a strict affected series as one for which (i) the first positive sale occurs after week 0, (ii) every preceding weekly sale is exactly zero, and (iii) the 12-week series contains no negative sales. This yields 262 series (0.245\% of all series), spanning 245 products and 87 stores. The baseline history begins at week 0 of the provided lifecycle window; the alternative history begins at the first positive weekly sale.
+
+Visuelle provides the cleaner lifecycle-oriented comparison but low prevalence. It therefore offers strong local identification while making large global benchmark effects unlikely by construction.
+
+\subsection{FreshRetailNet-50K}
+
+FreshRetailNet-50K contains 50,000 store--product series with detailed sales and stockout annotations from fresh retail \citep{wang2025freshretail}. We use the official Dingdong-Inc release on Hugging Face \citep{freshretail_dataset_card}, specifically the public training split with 4.5 million daily rows and exactly 90 days per series. The dataset paper reports 898 stores in 18 major cities. Our analysis uses only \texttt{store\_id}, \texttt{product\_id}, \texttt{dt}, \texttt{sale\_amount}, and \texttt{stock\_hour6\_22\_cnt}.
+
+The start of the 90-day window is \emph{not} documented as a product launch date. Accordingly, we do not call the baseline ``release-aligned.'' Instead, we define a strict stock-grounded sample using the daily stockout variable. A series is treated when (i) its first positive sale occurs after day 0, (ii) all preceding sales are exactly zero, (iii) all preceding days have \texttt{stock\_hour6\_22\_cnt == 0}, indicating no recorded stockout hours during 06:00--22:00, and (iv) the series has no negative sales.
+
+Of 50,000 series, 3,256 (6.512\%) have a delayed first positive sale, but only 903 (1.806\%) satisfy the strict stock-grounded definition. These 903 series span 229 products and 563 stores. Thus only about 27.7\% of delayed-first-positive series have fully stock-confirmed active-zero leading periods under our definition. This is an important descriptive result: neither ``all leading zeros are pre-availability'' nor ``all leading zeros are genuine active zeros'' is supported.
+
+\begin{table}[t]
+\centering
+\caption{Datasets and affected samples. FreshRetailNet-50K is a stock-grounded mechanism replication rather than a launch-date replication.}
+\label{tab:data}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Dataset & All series & Strict affected & Share & Unique products \\
+\midrule
+Visuelle 2.0 & 106,850 & 262 & 0.245\% & 245 \\
+FreshRetailNet-50K & 50,000 & 903 & 1.806\% & 229 \\
+\bottomrule
+\end{tabular}
+\end{table}
