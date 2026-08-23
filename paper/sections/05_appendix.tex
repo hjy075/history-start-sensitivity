@@ -1,0 +1,24 @@
+\section{Additional Metric-Sensitivity Figures}
+
+\begin{figure}[h]
+\centering
+\begin{minipage}{0.49\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/visuelle_metric_normalization.png}
+\caption*{(a) Visuelle 2.0}
+\end{minipage}
+\hfill
+\begin{minipage}{0.49\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/freshretail_metric_normalization.png}
+\caption*{(b) FreshRetailNet-50K}
+\end{minipage}
+\caption{Fixed-denominator versus convention-specific MASE sensitivity. The latter changes both the forecast and the scaling denominator.}
+\label{fig:metric}
+\end{figure}
+
+\section{Robustness Notes}
+
+For Visuelle, minimum-history values 2, 3, and 4 all preserve IMAPA as the deterministic winner while producing Kendall's $\tau$ of 0.278, 0.389, and 0.389, respectively. TSB sensitivity checks at $\alpha_d=\alpha_p\in\{0.1,0.2,0.3\}$ preserve the positive direction of the trimming effect.
+
+For FreshRetailNet-50K, minimum-history values 2, 3, and 4 preserve TSB as the deterministic winner while changing the remaining rank order. A minimum history of 7 changes the grounded-condition winner to CrostonSBA but leaves TSB first after trimming. Tail robustness checks excluding the unusual day-18 delay concentration and restricting delay to at most seven days preserve the qualitative mechanism result.
