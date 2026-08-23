@@ -1,0 +1,50 @@
+
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{natbib}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{caption}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue
+}
+
+\title{When Does History Start Matter?\\
+Model-Specific Sensitivity and Global Robustness in Retail Forecast Evaluation}
+
+\author{Jinyong Ha\\
+Graduate School of Policy Studies, Korea University\\
+Seoul, Republic of Korea\\
+\texttt{hjy075@korea.ac.kr} \quad \texttt{hjy075@gmail.com}}
+\date{August 2026}
+
+\emergencystretch=2em
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Retail forecasting pipelines must decide where a product--store history begins. A common convention is to remove leading zero sales and start a series at its first positive observation, but such zeros may reflect genuine active periods rather than pre-availability. We study how this history-start convention changes forecast evaluation while holding the target observation fixed. Using Visuelle 2.0 and FreshRetailNet-50K, we compare a lifecycle-aligned or stock-grounded history with a first-positive-trimmed history across nine canonical statistical forecasting methods. In Visuelle, the affected subset is rare (262 of 106,850 series; 0.245\%), yet seven of nine methods exhibit non-zero bootstrap effects and local rankings are unstable (mean Kendall's $\tau=0.483$), while the top method changes in only 10.6\% of bootstrap samples. In FreshRetailNet-50K, 903 of 50,000 series (1.806\%) contain stock-confirmed active-zero observations before first sale. Effects are smaller and heterogeneous: HistoricAverage has a positive 95\% product-cluster bootstrap interval excluding zero, optimized SES has a negative interval excluding zero, and point-effect signs vary non-monotonically across evaluation origins; the corrected winner-change probability is 33.4\%. In both datasets, benchmark-level scores and rankings remain largely stable, consistent with the limited prevalence of affected histories. We also show that history-dependent MASE/RMSSE denominators can reverse the apparent direction of an effect. The results motivate separating local forecast sensitivity, evaluation eligibility, benchmark propagation, and metric-normalization sensitivity when assessing preprocessing conventions.
+\end{abstract}
+
+\input{sections/01_background.tex}
+\input{sections/02_methods.tex}
+\input{sections/03_results_discussion.tex}
+\input{sections/04_endmatter.tex}
+\bibliographystyle{plainnat}
+\bibliography{references}
+\appendix
+\input{sections/05_appendix.tex}
+\end{document}
