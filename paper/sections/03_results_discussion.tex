@@ -1,0 +1,133 @@
+\section{Results}
+
+\subsection{Visuelle: strong local sensitivity, stable winner}
+
+Figure~\ref{fig:local} summarizes the corrected product-cluster bootstrap effects. In Visuelle, seven of nine methods have 95\% intervals that exclude zero, all in the direction of higher MAE after trimming. The largest changes occur for CrostonClassic ($\Delta$MAE $=0.165$, 95\% CI $[0.113,0.218]$), CrostonSBA ($0.135$, $[0.087,0.184]$), and CrostonOptimized ($0.086$, $[0.059,0.114]$). TSB, HistoricAverage, IMAPA, and ADIDA also have 95\% intervals entirely above zero. SESOpt has a small, uncertain effect and Naive is invariant by construction because the last observation is unchanged.
+
+Although IMAPA remains the deterministic top method under both conditions, the full ranking changes materially. TSB moves from rank 3 to 5, CrostonSBA from 5 to 8, CrostonClassic from 6 to 9, SESOpt from 8 to 3, and Naive from 9 to 6. The corrected cluster bootstrap yields mean Kendall's $\tau=0.483$ (95\% interval $[0.222,0.722]$); 99.5\% of replicates have $\tau<0.8$. The winning method changes in 10.6\% of replicates. Across minimum-history settings 2, 3, and 4, the deterministic winner remains IMAPA while Kendall's $\tau$ ranges from 0.278 to 0.389, confirming that winner stability does not imply rank stability.
+
+\begin{figure}[t]
+\centering
+\begin{minipage}{0.49\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/visuelle_local_effects.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.49\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/freshretail_local_effects.png}
+\end{minipage}
+\caption{Local common-support effects under the corrected series-weighted product-cluster bootstrap. Positive $\Delta$MAE means first-positive trimming worsens accuracy. Visuelle effects are broadly positive; FreshRetailNet-50K effects are smaller and heterogeneous.}
+\label{fig:local}
+\end{figure}
+
+\begin{table*}[t]
+\centering
+\caption{Corrected local effects and deterministic rank changes. Confidence intervals come from 5,000 product-cluster bootstrap replicates targeting the series-weighted estimand.}
+\label{tab:local}
+\scriptsize
+\begin{tabular}{lccc ccc}
+\toprule
+& \multicolumn{3}{c}{Visuelle 2.0} & \multicolumn{3}{c}{FreshRetailNet-50K} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+Model & $\Delta$MAE & 95\% CI & Rank $G\rightarrow T$ & $\Delta$MAE & 95\% CI & Rank $G\rightarrow T$\\
+\midrule
+IMAPA & 0.034644 & [0.018029, 0.051943] & 1$\rightarrow$1 & 0.000925 & [-0.000647, 0.002508] & 3$\rightarrow$4 \\
+ADIDA & 0.032805 & [0.015261, 0.050300] & 2$\rightarrow$2 & 0.001049 & [-0.000562, 0.002744] & 2$\rightarrow$3 \\
+TSB & 0.057222 & [0.030294, 0.084530] & 3$\rightarrow$5 & 0.000147 & [-0.001890, 0.002182] & 1$\rightarrow$1 \\
+HistoricAverage & 0.039108 & [0.023306, 0.054923] & 4$\rightarrow$4 & 0.002538 & [0.000871, 0.004601] & 7$\rightarrow$8 \\
+CrostonSBA & 0.135055 & [0.086725, 0.184388] & 5$\rightarrow$8 & -0.000013 & [-0.002716, 0.002959] & 4$\rightarrow$2 \\
+CrostonClassic & 0.165110 & [0.113383, 0.217732] & 6$\rightarrow$9 & 0.002374 & [-0.000506, 0.005578] & 5$\rightarrow$7 \\
+CrostonOptimized & 0.086098 & [0.059272, 0.113902] & 7$\rightarrow$7 & 0.001808 & [-0.000005, 0.003660] & 6$\rightarrow$5 \\
+SESOpt & 0.003845 & [-0.017766, 0.027473] & 8$\rightarrow$3 & -0.002115 & [-0.003846, -0.000452] & 8$\rightarrow$6 \\
+Naive & 0 & [0,0] & 9$\rightarrow$6 & 0 & [0,0] & 9$\rightarrow$9 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{FreshRetailNet-50K: smaller effects and temporal heterogeneity}
+
+FreshRetailNet-50K provides a different picture. Point effects are much smaller, and only two methods have corrected 95\% intervals excluding zero. HistoricAverage worsens ($\Delta$MAE $=0.002538$, 95\% CI $[0.000871,0.004601]$), while SESOpt \emph{improves} ($-0.002115$, $[-0.003846,-0.000452]$). This directly rejects the stronger hypothesis that first-positive trimming is uniformly harmful.
+
+The deterministic winner, TSB, remains first under both conditions, but the order below the winner changes: CrostonSBA moves from rank 4 to 2, CrostonClassic from 5 to 7, and SESOpt from 8 to 6. Under the corrected cluster bootstrap, mean Kendall's $\tau$ is 0.813 (95\% interval $[0.611,0.944]$), and 43.2\% of replicates have $\tau<0.8$. The winner changes in 33.4\% of replicates. Release/grounded winner probabilities are diffuse---TSB 35.8\%, ADIDA 34.8\%, CrostonSBA 19.7\%, and IMAPA 9.1\%---and shift under trimming, with TSB rising to 46.7\%.
+
+A distinctive FreshRetailNet-50K result is descriptive temporal heterogeneity in the point effects. Figure~\ref{fig:time} shows $\Delta$MAE over the ten prespecified target days. At day 4, most non-naive methods worsen substantially: for example CrostonClassic rises by 16.8\%, CrostonOptimized by 21.1\%, HistoricAverage by 17.8\%, and TSB by 11.8\%. At day 7, the direction reverses for the same families: CrostonClassic improves by 11.7\%, CrostonSBA by 13.1\%, and TSB by 9.5\%. Across models, the point-effect profile is non-monotonic, with two to six sign changes over the target grid. Thus the observed effect does not simply decay as history length grows; it interacts with the evaluation origin and model state. These origin-specific profiles are descriptive: we do not attach separate bootstrap confidence intervals to each target day.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.88\linewidth]{figures/freshretail_target_day_profile.png}
+\caption{FreshRetailNet-50K $\Delta$MAE across prespecified evaluation origins. The point-effect profile is non-monotonic and often changes sign, especially in short histories; origin-specific uncertainty is not shown.}
+\label{fig:time}
+\end{figure}
+
+\subsection{Eligibility effects}
+
+Table~\ref{tab:coverage} separates common-support accuracy from forecast eligibility. In Visuelle, first-positive initialization removes 359 forecast origins under the primary minimum-history rule: 15.22\% of treated origins but only 0.0385\% of all benchmark origins. The treated loss increases from 13.70\% at minimum history 2 to 17.13\% at minimum history 4.
+
+In strict FreshRetailNet-50K, 1,146 treated origins are lost, corresponding to 1.46\% of treated origins and 0.0263\% globally. The lower treated loss is consistent with the empirical delay distribution: at least 75\% of strict series have only a one-day gap before first positive sale. In the broader blanket sensitivity scenario, trimming all 3,256 delayed-first-positive series produces a treated coverage loss of 2.80\% and a global loss of 0.1825\%.
+
+\begin{table}[t]
+\centering
+\caption{Eligibility loss under the primary minimum-history rule ($h=3$).}
+\label{tab:coverage}
+\small
+\begin{tabular}{lrrr}
+\toprule
+Dataset / scenario & Lost origins & Treated loss & Global loss \\
+\midrule
+Visuelle strict & 359 & 15.22\% & 0.0385\% \\
+FreshRetail strict & 1,146 & 1.46\% & 0.0263\% \\
+FreshRetail blanket sensitivity & 7,938 & 2.80\% & 0.1825\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Global propagation is small}
+
+Local sensitivity does not materially invalidate either full benchmark. For Visuelle, global evaluation over weeks 8--11 preserves the entire nine-model ranking. The largest MAE change is only 0.000551 for CrostonClassic (1.342678 to 1.343229).
+
+For the strict FreshRetailNet-50K scenario over days 28, 56, and 89, global changes are also tiny. The largest absolute MAE change is about $4.47\times10^{-5}$ (CrostonClassic). Only CrostonSBA and CrostonOptimized exchange ranks 5 and 6. Under the broader blanket sensitivity, the largest absolute MAE change is approximately 0.000799, while the deterministic rank ordering remains unchanged.
+
+These results follow naturally from prevalence. A preprocessing convention can have a meaningful effect conditional on being exposed to it, yet have little influence on a benchmark average when affected histories are rare. Consequently, claims about local evaluation validity and claims about benchmark-level invalidity must be separated.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.70\linewidth]{figures/local_rank_stability.png}
+\caption{Corrected local rank stability. Kendall's $\tau$ summarizes agreement between model rankings; winner-change probability measures whether the best model changes within the same product-cluster bootstrap replicate.}
+\label{fig:rank}
+\end{figure}
+
+\subsection{Metric normalization can change the conclusion}
+
+History-dependent scaled metrics create an additional source of sensitivity. In Visuelle, SESOpt has a fixed-denominator MASE change of $-0.0155$, suggesting improvement after trimming, but the convention-specific MASE change is $+0.0930$. In FreshRetailNet-50K the same method changes from $-0.0124$ under the fixed denominator to $+0.0328$ under convention-specific scaling. FreshRetail CrostonClassic similarly changes from $-0.0093$ to $+0.0354$.
+
+The sign reversal is not a forecasting contradiction. The two calculations answer different questions. Fixed scaling asks whether the forecasts changed relative to a common benchmark scale. Convention-specific scaling allows the preprocessing intervention to alter both the forecast and the denominator. When the purpose is to study preprocessing sensitivity, we recommend reporting the fixed-denominator result as primary and the convention-specific result as a separate measurement-sensitivity analysis.
+
+\section{Discussion}
+
+\subsection{History-start sensitivity is not a universal bias}
+
+The original motivating intuition could have supported a broad claim that first-positive trimming biases retail forecasting benchmarks. The data do not support that claim. Visuelle shows strong and mostly harmful local effects, whereas FreshRetailNet-50K shows smaller, mixed-sign effects and repeated sign reversals over evaluation time. A more defensible interpretation is \emph{history-start sensitivity}: the convention changes the information set, and different methods react differently.
+
+This distinction is important conceptually. First-positive trimming is not automatically wrong. If leading zeros truly represent pre-availability periods, removing them may be appropriate. Conversely, if the product was active and available, those zeros are valid observations about demand occurrence. The correct history start is therefore a data-semantic question, not merely a forecasting hyperparameter.
+
+\subsection{Winner stability and rank stability are different}
+
+A second lesson is that evaluating only the winning model can hide instability. In Visuelle the deterministic winner remains IMAPA across all tested minimum-history settings even though the rest of the ranking is substantially reordered. In FreshRetailNet-50K, TSB remains the deterministic winner, yet one-third of corrected bootstrap replicates switch winners between history conventions. Benchmark reports should therefore distinguish at least three concepts: score sensitivity, rank sensitivity, and winner sensitivity.
+
+\subsection{Local and global conclusions should be reported separately}
+
+The two datasets converge most clearly on the local/global distinction. Conditional effects can be large enough to matter for affected product--store histories while remaining too rare to move benchmark-wide averages. This resembles a general representativeness issue in benchmark interpretation \citep{theodorou2022representativeness}: aggregate benchmark conclusions depend not only on the magnitude of an effect but also on how prevalent the relevant series type is.
+
+For benchmark authors, we recommend reporting the prevalence of preprocessing-sensitive histories alongside accuracy results. For practitioners, the local subset may be more relevant than the benchmark average if newly launched, sparse, or recently activated items constitute an operationally important segment.
+
+\subsection{Practical recommendations}
+
+Our results suggest five simple practices for retail forecast evaluation:
+\begin{enumerate}[leftmargin=1.5em]
+    \item \textbf{Declare the history-start convention.} State whether leading zeros are retained, removed, or interpreted using availability metadata.
+    \item \textbf{Use external state information when available.} Release dates, assortment status, and stockout indicators help distinguish pre-availability zeros from active-zero demand.
+    \item \textbf{Separate common-support accuracy from eligibility.} A preprocessing rule can improve reported accuracy partly by making difficult early origins ineligible.
+    \item \textbf{Report local and global effects.} A large affected-subset effect does not establish benchmark-wide instability.
+    \item \textbf{Fix scaled-metric denominators for sensitivity studies.} If the intervention changes history, recomputing MASE/RMSSE scales can conflate forecast sensitivity with normalization sensitivity.
+\end{enumerate}
