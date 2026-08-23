@@ -1,0 +1,27 @@
+# Data and caches
+data/
+cache/
+outputs/
+paper_outputs/
+*.parquet
+*.zip
+
+# Notebook / Python
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+
+# LaTeX build products
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.fdb_latexmk
+paper/*.fls
+paper/*.log
+paper/*.out
+paper/*.pdf
+
+# OS / IDE
+.DS_Store
+.vscode/
+.idea/
