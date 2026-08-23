@@ -1,0 +1,67 @@
+\section{Experimental Design}
+
+\subsection{Paired common-support estimand}
+
+Let $y_{i,t}$ denote the realized demand for series $i$ at target time $t$. Let $s_i$ be the grounded history start and $f_i$ the first-positive time. For forecasting method $m$, the two one-step forecasts are
+\begin{align}
+\hat y^{G}_{i,t,m} &= \mathcal{F}_m(y_{i,s_i:t-1}),\\
+\hat y^{T}_{i,t,m} &= \mathcal{F}_m(y_{i,f_i:t-1}),
+\end{align}
+where $G$ denotes grounded/lifecycle-aligned history and $T$ denotes first-positive trimming. The target $y_{i,t}$ is identical in both conditions.
+
+For absolute error, we first average the paired error difference within each series over its common-support target set $\mathcal{T}_i$, and then average equally across the $N$ affected series:
+\begin{equation}
+\Delta_m =
+\frac{1}{N}
+\sum_{i=1}^{N}
+\left[
+\frac{1}{|\mathcal{T}_i|}
+\sum_{t\in\mathcal{T}_i}
+\left(
+|y_{i,t}-\hat y^T_{i,t,m}|
+-
+|y_{i,t}-\hat y^G_{i,t,m}|
+\right)
+\right].
+\end{equation}
+This is a series-weighted estimand: each product--store series receives equal weight regardless of how many common-support origins it contributes. Positive $\Delta_m$ means trimming worsens MAE; negative values mean trimming improves MAE.
+
+The primary minimum-history requirement is three observations in both conditions. Visuelle additionally checks minimum histories of 2 and 4. FreshRetailNet-50K checks 2, 3, 4, and 7 observations. FreshRetailNet-50K uses prespecified target days
+\[
+\{4,7,14,21,28,42,56,70,84,89\},
+\]
+which allows the history-start effect to be examined from very short to long histories.
+
+\subsection{Forecasting methods}
+
+We use nine canonical implementations from StatsForecast 2.1.1 \citep{garza2022statsforecast}:
+Naive, HistoricAverage, optimized simple exponential smoothing (SESOpt), CrostonClassic, CrostonOptimized, CrostonSBA, TSB, ADIDA, and IMAPA. TSB uses $\alpha_d=\alpha_p=0.2$ in the primary analysis; Visuelle additionally checks 0.1 and 0.3. Forecasts are truncated below at zero where applicable.
+
+These methods span last-observation, mean-based, exponential-smoothing, Croston-style, probability-update, and temporal-aggregation families. The purpose is not to identify a state-of-the-art winner, but to test whether sensitivity generalizes across forecasting mechanisms.
+
+\subsection{Uncertainty and rank stability}
+
+For each method we first average forecast errors within each store--product series across eligible origins. We then use a product-cluster bootstrap with 5,000 replicates. Products are sampled with replacement as clusters, but all store-series belonging to sampled products are pooled, preserving the same \emph{series-weighted} estimand as the reported point estimate.
+
+For each replicate we compute $\Delta_m$, model ranks under both history conventions, Kendall's $\tau$, and the winning method. This corrected procedure is important: a preliminary bootstrap that averaged products equally targeted a different product-weighted estimand. The final results reported here use cluster resampling with series weighting throughout.
+
+\subsection{Eligibility and global propagation}
+
+The common-support experiment deliberately conditions on targets forecastable under both histories. Trimming can also delay the earliest forecast origin. For a minimum history $h$, we define
+\begin{equation}
+\text{Coverage loss}
+=
+1-\frac{N_T(h)}{N_G(h)},
+\end{equation}
+where $N_G$ and $N_T$ are the numbers of eligible forecast origins under the grounded and trimmed histories.
+
+Finally, we propagate the history convention to the full benchmark. Unaffected series have identical forecasts under both conditions; affected series use their alternative histories. Visuelle global evaluation uses target weeks 8--11. FreshRetailNet-50K uses target days 28, 56, and 89. We report global MAE, WAPE, and deterministic rank changes. FreshRetailNet-50K also includes a sensitivity analysis that trims all 3,256 delayed-first-positive series regardless of stock confirmation; this ``blanket'' scenario is operational rather than causally grounded.
+
+\subsection{Scaled metrics}
+
+MASE scales absolute forecast error by an in-sample naive-error denominator \citep{hyndman2006mase}. We report two variants:
+\begin{itemize}[leftmargin=1.5em]
+    \item \textbf{Fixed denominator}: both forecast conditions use the grounded-history scale. This isolates forecast changes.
+    \item \textbf{Convention-specific denominator}: each condition computes its scale from its own history. This captures forecast changes plus metric-normalization changes.
+\end{itemize}
+We apply the same distinction to RMSSE. This separation prevents a history-start intervention from silently changing both the prediction and the measurement scale.
