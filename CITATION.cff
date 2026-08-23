@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite the accompanying preprint and the original datasets."
+title: "History-Start Sensitivity in Retail Forecast Evaluation"
+type: software
+authors:
+  - family-names: Ha
+    given-names: Jinyong
+    email: hjy075@korea.ac.kr
+version: 1.0.0
+date-released: 2026-08-23
+repository-code: "https://github.com/hjy075/history-start-sensitivity"
