@@ -1,6 +1,22 @@
 # History-Start Sensitivity in Retail Forecast Evaluation
 
-Reproducibility repository for **“When Does History Start Matter? Model-Specific Sensitivity and Global Robustness in Retail Forecast Evaluation.”**
+Reproducibility repository for the preprint **“When Does History Start Matter? Model-Specific Sensitivity and Global Robustness in Retail Forecast Evaluation.”**
+
+**Author:** Jinyong Ha  
+**Affiliation:** Graduate School of Policy Studies, Korea University  
+**Canonical code repository:** https://github.com/hjy075/history-start-sensitivity
+
+## Preprint and citation
+
+The manuscript is being distributed as a preprint. This repository is the canonical reproducibility location for the paper and is intended to remain the same across preprint platforms and later journal versions.
+
+- **Title:** When Does History Start Matter? Model-Specific Sensitivity and Global Robustness in Retail Forecast Evaluation
+- **Author:** Jinyong Ha
+- **Version:** Preprint, August 2026
+- **SSRN:** identifier/DOI will be added here after assignment.
+- **arXiv:** identifier will be added here after assignment.
+
+Until a preprint identifier is assigned, please use the bibliographic metadata in `CITATION.cff`. After SSRN and/or arXiv assignment, the corresponding persistent identifiers will be added without changing the canonical paper title, author name, or repository URL.
 
 ## Repository structure
 
@@ -71,7 +87,7 @@ The forecasting experiments use `statsforecast==2.1.1`; inference uses a 5,000-r
 
 ## Citation
 
-If you use this code, please cite the accompanying preprint and the original dataset publications. Dataset-specific citations remain required; see `DATA_SOURCES.md` and `CITATION.cff`.
+If you use the research results, please cite the accompanying preprint. If you use the software or reproducibility materials, cite this repository as well. Dataset-specific citations remain required; see `DATA_SOURCES.md` and `CITATION.cff`.
 
 ## License
 
