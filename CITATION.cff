@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use this repository, please cite the accompanying preprint and the original datasets."
+message: "If you use the research results, please cite the accompanying preprint. If you use the reproducibility software, cite this repository as well."
 title: "History-Start Sensitivity in Retail Forecast Evaluation"
 type: software
 authors:
@@ -7,3 +7,12 @@ authors:
     given-names: Jinyong
     email: hjy075@korea.ac.kr
 repository-code: "https://github.com/hjy075/history-start-sensitivity"
+preferred-citation:
+  type: article
+  title: "When Does History Start Matter? Model-Specific Sensitivity and Global Robustness in Retail Forecast Evaluation"
+  authors:
+    - family-names: Ha
+      given-names: Jinyong
+      email: hjy075@korea.ac.kr
+  year: 2026
+  url: "https://github.com/hjy075/history-start-sensitivity"
