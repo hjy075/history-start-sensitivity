@@ -1,0 +1,12 @@
+from pathlib import Path
+p=Path('tmp_entsoe_audit.py')
+s=p.read_text()
+s=s.replace('entsoe/1H/train-00000-of-00001.parquet','solar_with_weather/1H/train-00000-of-00001.parquet')
+s=s.replace('entsoe_audit_results.csv','solar_audit_results.csv').replace('entsoe_1H.parquet','solar_1H.parquet')
+s=s.replace('WEATHER = ["temperature", "radiation_direct_horizontal", "radiation_diffuse_horizontal"]','WEATHER = ["wind_speed", "humidity", "rain_1h", "snow_1h", "temp", "pressure"]\nVALID_KNOWN = ["day_length"]')
+s=s.replace('for c in ["target","solar_generation_actual","wind_onshore_generation_actual"]+WEATHER:', 'for c in ["target"]+WEATHER+VALID_KNOWN:')
+s=s.replace('feats=BASE_FEATURES+wx', 'feats=BASE_FEATURES+VALID_KNOWN+wx')
+s=s.replace('f=dynamic_row_features(hist, row)', 'f=dynamic_row_features(hist, row)\n            for c in VALID_KNOWN: f[c]=getattr(row,c)')
+s=s.replace('H = 168','H = 24')
+p.write_text(s)
+exec(compile(s, str(p), 'exec'))
