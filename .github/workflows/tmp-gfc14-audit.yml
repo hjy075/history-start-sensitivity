@@ -1,7 +1,5 @@
 name: tmp-gfc14-audit
 on:
-  push:
-    branches: [tmp-entsoe-audit]
   workflow_dispatch:
 
 jobs:
