@@ -1,0 +1,25 @@
+name: tmp-gfc14-audit
+on:
+  push:
+    branches: [tmp-entsoe-audit]
+  workflow_dispatch:
+
+jobs:
+  run-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install --quiet pandas numpy pyarrow requests lightgbm scikit-learn
+      - name: Run audit
+        run: python tmp_gfc14_audit.py
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gfc14-audit-results
+          path: gfc14_audit_results.csv
