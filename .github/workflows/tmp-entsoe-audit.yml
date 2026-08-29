@@ -1,7 +1,5 @@
 name: tmp-entsoe-audit
 on:
-  push:
-    branches: [tmp-entsoe-audit]
   workflow_dispatch:
 
 jobs:
@@ -22,5 +20,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: entsoe-audit-results
-          path: |
-            entsoe_audit_results.csv
+          path: entsoe_audit_results.csv
