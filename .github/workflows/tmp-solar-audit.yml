@@ -1,0 +1,21 @@
+name: tmp-solar-audit
+on:
+  push:
+    branches: [tmp-entsoe-audit]
+  workflow_dispatch:
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install --quiet pandas numpy pyarrow requests lightgbm
+      - run: python tmp_solar_audit.py
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: solar-audit-results
+          path: solar_audit_results.csv
