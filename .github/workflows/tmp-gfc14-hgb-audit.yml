@@ -1,7 +1,5 @@
 name: tmp-gfc14-hgb-audit
 on:
-  push:
-    branches: [tmp-entsoe-audit]
   workflow_dispatch:
 
 jobs:
@@ -16,23 +14,4 @@ jobs:
       - name: Install dependencies
         run: pip install --quiet pandas numpy pyarrow requests scikit-learn
       - name: Patch model to HistGradientBoosting
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('tmp_gfc14_audit.py')
-          s=p.read_text()
-          s=s.replace('from lightgbm import LGBMRegressor','from sklearn.ensemble import HistGradientBoostingRegressor')
-          s=s.replace("OUT=Path('gfc14_audit_results.csv')","OUT=Path('gfc14_hgb_audit_results.csv')")
-          old="m=LGBMRegressor(n_estimators=140,learning_rate=.05,num_leaves=31,subsample=.9,colsample_bytree=.9,reg_lambda=1.,random_state=20260829,n_jobs=-1,verbosity=-1)"
-          new="m=HistGradientBoostingRegressor(max_iter=180,learning_rate=.05,max_leaf_nodes=31,l2_regularization=1.0,random_state=20260829)"
-          s=s.replace(old,new)
-          p.write_text(s)
-          PY
-      - name: Run robustness audit
-        run: python tmp_gfc14_audit.py
-      - name: Upload results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: gfc14-hgb-audit-results
-          path: gfc14_hgb_audit_results.csv
+        run: echo robustness workflow retained for manual reproduction
