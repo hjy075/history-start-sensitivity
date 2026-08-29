@@ -23,15 +23,15 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install numpy pandas scipy scikit-learn datasets pyarrow huggingface_hub
-      - name: Run exact-FEV GFC14 origin audit
+      - name: Run corrected exact-FEV GFC14 robustness audit
         run: |
-          python experiments/fev_origin_audit.py | tee fev_origin_audit.log
+          python experiments/fev_origin_audit_v2.py | tee fev_origin_audit_v2.log
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: fev-origin-audit-results
+          name: fev-origin-audit-v2-results
           path: |
-            tmp_fev_audit_results/
-            fev_origin_audit.log
+            tmp_fev_audit_results_v2/
+            fev_origin_audit_v2.log
           if-no-files-found: warn
