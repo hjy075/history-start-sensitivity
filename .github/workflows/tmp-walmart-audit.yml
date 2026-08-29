@@ -1,0 +1,23 @@
+name: tmp-walmart-audit
+on:
+  push:
+    branches: [tmp-entsoe-audit]
+    paths:
+      - 'tmp_walmart_audit.py'
+      - '.github/workflows/tmp-walmart-audit.yml'
+  workflow_dispatch:
+jobs:
+  run-audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install --quiet pandas numpy pyarrow requests lightgbm scikit-learn
+      - run: python tmp_walmart_audit.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: walmart-audit-predictions
+          path: walmart_audit_predictions.csv
